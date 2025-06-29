@@ -55,26 +55,27 @@ def get_weather(city_name: str) -> str:
     else:
         return "ไม่พบข้อมูลสภาพอากาศสำหรับเมืองนี้"
 
+@tool
 def add_numbers(a: float, b: float) -> float:
     """
     This function takes two numbers as input and returns their sum.
     """
     return a + b
 
-def parsing_add_numbers(input_str: str) -> float:
-    """
-    This function parses a string input to extract two numbers and returns their sum.
-    """
-    try:
-        # Split the input string by spaces and convert to float
-        numbers = list(map(float, input_str.split(",")))
-        if len(numbers) != 2:
-            raise ValueError("Input must contain exactly two numbers.")
-        return add_numbers(float(numbers[0]), float(numbers[1]))
-    except ValueError as e:
-        return f"Error parsing input: {e}"
+# def parsing_add_numbers(input_str: str) -> float:
+#     """
+#     This function parses a string input to extract two numbers and returns their sum.
+#     """
+#     try:
+#         # Split the input string by spaces and convert to float
+#         numbers = list(map(float, input_str.split(",")))
+#         if len(numbers) != 2:
+#             raise ValueError("Input must contain exactly two numbers.")
+#         return add_numbers(float(numbers[0]), float(numbers[1]))
+#     except ValueError as e:
+#         return f"Error parsing input: {e}"
 
-
+@tool
 def subtract_numbers(a: float, b: float) -> float:
     """
     This function takes two numbers as input and returns their difference.
@@ -84,30 +85,32 @@ def subtract_numbers(a: float, b: float) -> float:
 # 2. Wrap Function as a LangChain Tool:
 tools = [
     get_weather,
-    Tool(
-        name="add_numbers",
-        func=parsing_add_numbers,
-        description="useful for when you need to add two numbers together. The input to this tool should be a comma separated list of numbers of length two.",
-    ),
-    StructuredTool(
-        name="subtract_numbers",
-        func=subtract_numbers,
-        description="useful for when you need to subtract two numbers.",
-        args_schema={
-            "type": "object",
-            "properties": {
-                "a": {
-                    "type": "float",
-                    "description": "The first number to subtract from.",
-                },
-                "b": {
-                    "type": "float",
-                    "description": "The second number to subtract.",
-                },
-            },
-            "required": ["a", "b"],
-        },
-    ),
+    add_numbers,
+    subtract_numbers,
+    # Tool(
+    #     name="add_numbers",
+    #     func=parsing_add_numbers,
+    #     description="useful for when you need to add two numbers together. The input to this tool should be a comma separated list of numbers of length two.",
+    # ),
+    # StructuredTool(
+    #     name="subtract_numbers",
+    #     func=subtract_numbers,
+    #     description="useful for when you need to subtract two numbers.",
+    #     args_schema={
+    #         "type": "object",
+    #         "properties": {
+    #             "a": {
+    #                 "type": "float",
+    #                 "description": "The first number to subtract from.",
+    #             },
+    #             "b": {
+    #                 "type": "float",
+    #                 "description": "The second number to subtract.",
+    #             },
+    #         },
+    #         "required": ["a", "b"],
+    #     },
+    # ),
 ]
 
 ################################################################## END WORKSHOP CREATE TOOLS ################################################################
@@ -138,14 +141,14 @@ agent = initialize_agent(
 )
 
 # 4. Run the Agent and Observe:
-prompt1 = "What is the weather in London?"
+prompt1 = "\nWhat is the weather in London?"
 response1 = agent.run(prompt1)
 print(f"Prompt: {prompt1}\nResponse: {response1}\n")
 
-prompt2 = "What is the sum of 5 and 3?"
+prompt2 = "\nWhat is the sum of 5 and 3?"
 response2 = agent.run(prompt2)
 print(f"Prompt: {prompt2}\nResponse: {response2}")
 
-prompt3 = "What is the difference between 10 and 4?"
+prompt3 = "\nWhat is the difference between 10 and 4?"
 response3 = agent.run(prompt3)
 print(f"Prompt: {prompt3}\nResponse: {response3}")
