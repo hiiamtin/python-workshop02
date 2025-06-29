@@ -40,9 +40,75 @@ if not os.environ.get(API_KEY_NAME):
 ################################################################ WORKSHOP CREATE TOOLS ################################################################
 
 # 1. Define a Simple Python Function:
+@tool
+def get_weather(city_name: str) -> str:
+    """
+    This function takes a city name as input and returns a string describing the weather in that city.
+    """
+    weather_data = {
+        "London": "Sunny, 20°C",
+        "Paris": "Cloudy, 18°C",
+        "Tokyo": "Rainy, 15°C",
+    }
+    if city_name in weather_data:
+        return weather_data[city_name]
+    else:
+        return "ไม่พบข้อมูลสภาพอากาศสำหรับเมืองนี้"
+
+def add_numbers(a: float, b: float) -> float:
+    """
+    This function takes two numbers as input and returns their sum.
+    """
+    return a + b
+
+def parsing_add_numbers(input_str: str) -> float:
+    """
+    This function parses a string input to extract two numbers and returns their sum.
+    """
+    try:
+        # Split the input string by spaces and convert to float
+        numbers = list(map(float, input_str.split(",")))
+        if len(numbers) != 2:
+            raise ValueError("Input must contain exactly two numbers.")
+        return add_numbers(float(numbers[0]), float(numbers[1]))
+    except ValueError as e:
+        return f"Error parsing input: {e}"
+
+
+def subtract_numbers(a: float, b: float) -> float:
+    """
+    This function takes two numbers as input and returns their difference.
+    """
+    return a - b
 
 # 2. Wrap Function as a LangChain Tool:
-tools = []
+tools = [
+    get_weather,
+    Tool(
+        name="add_numbers",
+        func=parsing_add_numbers,
+        description="useful for when you need to add two numbers together. The input to this tool should be a comma separated list of numbers of length two.",
+    ),
+    StructuredTool(
+        name="subtract_numbers",
+        func=subtract_numbers,
+        description="useful for when you need to subtract two numbers.",
+        args_schema={
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "float",
+                    "description": "The first number to subtract from.",
+                },
+                "b": {
+                    "type": "float",
+                    "description": "The second number to subtract.",
+                },
+            },
+            "required": ["a", "b"],
+        },
+    ),
+]
 
 ################################################################## END WORKSHOP CREATE TOOLS ################################################################
 
