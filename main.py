@@ -72,14 +72,21 @@ agent = initialize_agent(
 )
 
 # 4. Run the Agent and Observe:
-prompt1 = "What is the weather in London?"
+prompt1 = "promt1"
 response1 = agent.run(prompt1)
 print(f"Prompt: {prompt1}\nResponse: {response1}\n")
 
-prompt2 = "What is the sum of 5 and 3?"
+prompt2 = "promt3"
 response2 = agent.run(prompt2)
 print(f"Prompt: {prompt2}\nResponse: {response2}")
 
-prompt3 = "What is the difference between 10 and 4?"
+prompt3 = "promt3"
 response3 = agent.run(prompt3)
 print(f"Prompt: {prompt3}\nResponse: {response3}")
+
+# or you can use the agent with a loop to continuously get user input
+# while True:
+#     user_input = input("You: ")
+#     if user_input.lower() in ["exit", "quit"]:
+#         break
+#     response = agent.run(user_input)
